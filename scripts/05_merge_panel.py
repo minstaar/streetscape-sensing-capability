@@ -26,7 +26,7 @@ INTERIM   = ROOT / "data/interim"
 OUT_PATH  = PROC  / "panel_final.csv"
 REPORT    = INTERIM / "merge_report.txt"
 
-STUDY_START = 20222
+STUDY_START = 20191
 STUDY_END   = 20254
 
 
@@ -138,7 +138,7 @@ def main():
     print(f"\n저장 완료:")
     print(f"  최종 패널    -> {OUT_PATH}")
     print(f"  결측 보고서  -> {REPORT}")
-    print(f"\n다음 단계: scripts/06_collect_images.py (Street View 이미지 수집)")
+    print(f"\n다음 단계: scripts/05b_cross_sectional.py (2024년 단면 데이터 구축)")
 
 
 if __name__ == "__main__":

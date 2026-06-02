@@ -4,6 +4,7 @@ data/raw/images/
 data/images/
 data/images_test/
 data/images_rejected/
+data/images_test_new/
 
 # osmnx 캐시
 cache/

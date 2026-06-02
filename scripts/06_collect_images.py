@@ -277,7 +277,9 @@ def stratified_sample(candidates, n_pts, min_dist_m):
 # Street View API
 # ══════════════════════════════════════════════════════════════════════════════
 def get_pano_location(lat, lng):
-    """메타데이터 API → 실제 파노라마 위치 반환 / 없으면 None"""
+    """메타데이터 API → (pano_lat, pano_lng, capture_date) 반환 / 없으면 None
+    capture_date: 'YYYY-MM' 형식 (e.g. '2024-03'), 없으면 ''
+    """
     try:
         r = requests.get(
             SV_META,
@@ -288,7 +290,8 @@ def get_pano_location(lat, lng):
         if data.get("status") != "OK":
             return None
         loc = data["location"]
-        return float(loc["lat"]), float(loc["lng"])
+        capture_date = data.get("date", "")   # 'YYYY-MM' or ''
+        return float(loc["lat"]), float(loc["lng"]), capture_date
     except Exception:
         return None
 
@@ -444,7 +447,7 @@ def main():
                 total_no_sv += 1
                 continue
 
-            pano_lat, pano_lng = pano
+            pano_lat, pano_lng, capture_date = pano
             snap_d = dist_m(pt_lat, pt_lng, pano_lat, pano_lng)
             if snap_d > MAX_SNAP_M:
                 total_snap_skip += 1
@@ -458,12 +461,13 @@ def main():
 
                 success = download_sv_image(pano_lat, pano_lng, heading, img_path)
                 new_records.append({
-                    "상권_코드": code,
-                    "filename" : img_path.name,
-                    "lat"      : round(pt_lat, 6),
-                    "lng"      : round(pt_lng, 6),
-                    "heading"  : heading,
-                    "success"  : success,
+                    "상권_코드"     : code,
+                    "filename"      : img_path.name,
+                    "lat"           : round(pt_lat, 6),
+                    "lng"           : round(pt_lng, 6),
+                    "heading"       : heading,
+                    "capture_date"  : capture_date,   # 'YYYY-MM', 촬영 연월
+                    "success"       : success,
                 })
                 if success:
                     total_download += 1

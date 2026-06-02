@@ -1,0 +1,3 @@
+﻿상권유형,n,CV_folds,R2_tabular,R2_tabular_std,R2_image,R2_image_std,delta_R2,t_stat,p_value,significance
+골목상권,624,10,0.1004,0.0891,0.1293,0.1218,0.0288,1.234,0.2486,n.s.
+발달상권,214,5,0.0426,0.1035,-0.0847,0.3043,-0.1273,-0.949,0.3965,n.s.

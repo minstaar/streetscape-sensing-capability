@@ -31,11 +31,14 @@ LIST_PATH = ROOT / "data/processed/final_sangkwon_list.csv"
 OUT_PATH  = ROOT / "data/processed/features_panel.csv"
 
 # 연구 기간 분기코드
-STUDY_START = 20222
+STUDY_START = 20191
 STUDY_END   = 20254
 
-# 점포 연도별 파일 목록 (2022Q2부터 필요하므로 2022~2025)
+# 점포 연도별 파일 목록 (2019~2025)
 STORE_FILES = [
+    "서울시_상권분석서비스(점포-상권)_2019년.csv",
+    "서울시_상권분석서비스(점포-상권)_2020년.csv",
+    "서울시_상권분석서비스(점포-상권)_2021년.csv",
     "서울시_상권분석서비스(점포-상권)_2022년.csv",
     "서울시_상권분석서비스(점포-상권)_2023년.csv",
     "서울시 상권분석서비스(점포-상권)_2024년.csv",

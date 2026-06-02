@@ -63,7 +63,7 @@ VALID_CSV     = ROOT / "data/processed/valid_image_sangkwon.csv"
 
 # ── CLIP 파라미터 ──────────────────────────────────────────────────────────────
 CLIP_MODEL_ID   = "openai/clip-vit-base-patch32"
-CLIP_THRESHOLD  = 0.12    # 이 점수 미만 → rejected (분포 분석 기반: 하위 ~8% 제거)
+CLIP_THRESHOLD  = 0.12    # 이 점수 미만 → rejected (상향: 하위 ~30% 제거, 상업 전면 강화)
 MIN_VALID_IMAGES = 5      # 이 미만 상권 → flagged (11번에서 제외)
 
 # ── CLIP 텍스트 프롬프트 ───────────────────────────────────────────────────────

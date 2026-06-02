@@ -35,14 +35,18 @@ OUT_LIST   = ROOT / "data/processed/final_sangkwon_list.csv"
 # 분기 평균 매출 최소 기준 (원)
 MIN_AVG_QUARTERLY_SALES = 100_000_000  # 1억
 
-# ── 연도별 zip 파일 목록 ───────────────────────────────────────────────────
-SALES_ZIPS = {
-    2021: "서울시_상권분석서비스(추정매출-상권)_2021년.zip",
-    2022: "서울시_상권분석서비스(추정매출-상권)_2022년.zip",
-    2023: "서울시_상권분석서비스(추정매출-상권)_2023년.zip",
-    2024: "서울시 상권분석서비스(추정매출-상권)_2024년.zip",
-    2025: "서울시 상권분석서비스(추정매출-상권)_2025년.zip",
+# ── 연도별 파일 목록 (zip 또는 csv) ───────────────────────────────────────
+SALES_FILES = {
+    2019: "서울시_상권분석서비스(추정매출-상권)_2019년.csv",
+    2020: "서울시_상권분석서비스(추정매출-상권)_2020년.csv",
+    2021: "서울시_상권분석서비스(추정매출-상권)_2021년.csv",
+    2022: "서울시_상권분석서비스(추정매출-상권)_2022년.csv",
+    2023: "서울시_상권분석서비스(추정매출-상권)_2023년.csv",
+    2024: "서울시 상권분석서비스(추정매출-상권)_2024년.csv",
+    2025: "서울시 상권분석서비스(추정매출-상권)_2025년.csv",
 }
+# 하위 호환성 유지
+SALES_ZIPS = SALES_FILES
 
 # 집계에 사용할 컬럼만 읽기 (메모리 절약)
 USE_COLS = [
@@ -66,6 +70,14 @@ def load_sales_zip(zip_path: Path) -> pd.DataFrame:
     return df
 
 
+def load_sales_file(path: Path) -> pd.DataFrame:
+    """zip 또는 csv 자동 감지 후 로드"""
+    if path.suffix == ".zip":
+        return load_sales_zip(path)
+    else:
+        return pd.read_csv(path, encoding="cp949", usecols=USE_COLS)
+
+
 def main():
     print("=" * 60)
     print("02_aggregate_sales.py 시작")
@@ -79,12 +91,12 @@ def main():
     # ── 2. 연도별 매출 데이터 로드 및 합치기 ──────────────────────────────
     print("\n[2] 연도별 매출 데이터 로드 중...")
     frames = []
-    for year, fname in SALES_ZIPS.items():
-        zip_path = SALES_DIR / fname
-        if not zip_path.exists():
+    for year, fname in SALES_FILES.items():
+        fpath = SALES_DIR / fname
+        if not fpath.exists():
             print(f"  ⚠️  {year}년 파일 없음: {fname}")
             continue
-        df = load_sales_zip(zip_path)
+        df = load_sales_file(fpath)
         frames.append(df)
         quarters = sorted(df["기준_년분기_코드"].unique())
         print(f"  {year}년: {len(df):,}행, 분기={quarters}")
