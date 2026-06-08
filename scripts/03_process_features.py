@@ -185,7 +185,7 @@ def main():
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     panel.to_csv(OUT_PATH, index=False, encoding="utf-8-sig")
     print(f"\n저장 완료 -> {OUT_PATH}")
-    print("다음 단계: scripts/04_process_macro.py")
+    print("다음 단계: scripts/05_merge_panel.py (04_process_macro 는 폐기됨)")
 
 
 if __name__ == "__main__":

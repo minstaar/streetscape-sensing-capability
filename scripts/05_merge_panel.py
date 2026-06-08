@@ -6,8 +6,8 @@
 
     Y   : 추정매출_합계   (sales_panel.csv)
     X1  : 유동인구, 직장인구, 상주인구, 점포_수, 개업률, 폐업률 (features_panel.csv)
-    X2  : CPI, 기준금리  (macro_panel.csv)
     Meta: 상권_유형_더미, 상권_면적, 자치구_코드, 분기_더미 (final_sangkwon_list.csv)
+    (거시변수 CPI/기준금리는 폐기 — 능력지도 분석에서 미사용)
 
 실행:
     python scripts/05_merge_panel.py
@@ -45,11 +45,6 @@ def main():
     features = pd.read_csv(PROC / "features_panel.csv")
     print(f"    X 시변 변수   : {features.shape}")
 
-    macro = pd.read_csv(PROC / "macro_panel.csv")
-    # 첫 컬럼을 기준_년분기_코드로 강제 통일 (BOM/명칭 차이 무관)
-    macro.columns = ["기준_년분기_코드", "CPI", "기준금리"]
-    print(f"    X 거시 변수   : {macro.shape}")
-
     sangkwon = pd.read_csv(PROC / "final_sangkwon_list.csv")
     sangkwon = sangkwon[[
         "상권_코드", "상권_코드_명", "상권_구분_코드_명",
@@ -69,11 +64,7 @@ def main():
     panel = sales.merge(features, on=key, how="left")
     print(f"[3] Y + 시변 X 병합: {len(panel):,}행")
 
-    # ── 4. 거시 X 병합 (분기코드 기준) ───────────────────────
-    panel = panel.merge(macro, on="기준_년분기_코드", how="left")
-    print(f"[4] + 거시 X 병합: {len(panel):,}행")
-
-    # ── 5. 상권 메타정보 병합 ─────────────────────────────────
+    # ── 4. 상권 메타정보 병합 ─────────────────────────────────
     panel = panel.merge(sangkwon, on="상권_코드", how="left")
     print(f"[5] + 상권 메타 병합: {len(panel):,}행")
 
@@ -99,8 +90,6 @@ def main():
         # 시변 X
         "유동인구", "직장인구", "상주인구",
         "점포_수", "개업률", "폐업률",
-        # 거시 X
-        "CPI", "기준금리",
     ]
     panel = panel[col_order].sort_values(key).reset_index(drop=True)
 
@@ -109,7 +98,7 @@ def main():
     print("결측값 현황:")
     report_lines = ["결측값 보고서\n" + "=" * 40]
     x_cols = ["유동인구", "직장인구", "상주인구",
-              "점포_수", "개업률", "폐업률", "CPI", "기준금리"]
+              "점포_수", "개업률", "폐업률"]
     for col in x_cols:
         n    = panel[col].isna().sum()
         pct  = n / len(panel) * 100

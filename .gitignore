@@ -1,6 +1,7 @@
 .env
 
-data/raw/images/
+data/images_poi/
+data/images_poi_rejected/
 data/images/
 data/images_test/
 data/images_rejected/

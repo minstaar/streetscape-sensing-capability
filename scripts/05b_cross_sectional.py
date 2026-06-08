@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-05b_cross_sectional.py — 2024년 기준 단면 데이터 구축
+05b_cross_sectional.py — 2019년 기준 단면 데이터 구축
 ─────────────────────────────────────────────────────────────────────────────
 [목적]
-    이미지 촬영 시점(2024~2025년)과 타뷸러 데이터를 정렬.
-    Law et al.(2019) 등 GSV 기반 선행연구 표준 방법론:
-        "이미지 수집 연도 = 타뷸러 데이터 연도"
+    이미지(2018년 빈티지)와 가장 가까운 매출패널 시작연도(2019)로 타뷸러 데이터 정렬.
+    GSV 기반 선행연구 표준: "이미지 수집 연도 ≈ 타뷸러 데이터 연도".
 
 [분석 연도]
-    CROSS_YEAR = 2024  →  분기코드 20241 ~ 20244 (4개 분기 평균)
+    CROSS_YEAR = 2019  →  분기코드 20191 ~ 20194 (4개 분기 평균)
 
 [Y 변수]
     log_sales = log1p( 분기별(추정매출_합계 / 점포_수) 의 연평균 )
@@ -19,8 +18,8 @@
     수요       : 유동인구, 직장인구
     공급/규모  : 점포_수, 개업률, 폐업률
     상권 특성  : 상권_유형_더미, 면적_km2
-    경쟁 구조  : 경쟁_집중도 (store/ 2024 데이터)
-    업종 구성  : 식음료_비율 (store/ 2024 데이터)
+    경쟁 구조  : 경쟁_집중도 (store/ CROSS_YEAR 데이터)
+    업종 구성  : 식음료_비율 (store/ CROSS_YEAR 데이터)
 
 [제외 이유]
     상주인구  : r=−0.04 (매출과 무관), 입지론 관점에서도 상업 매출의 직접
@@ -28,14 +27,14 @@
     CPI·기준금리: 단면 분석에서 모든 상권이 동일 값 → 분산=0 → 설명력 없음
 
 [출력]
-    data/processed/cross_sectional_data.csv  ← 09번·explore_features 입력
+    data/processed/cross_sectional_data.csv  ← 10_capability_map.py 입력
 
 실행:
     python scripts/05b_cross_sectional.py
 
 의존성:
     data/processed/panel_final.csv
-    data/raw/store/서울시 상권분석서비스(점포-상권)_2024년.csv
+    data/raw/store/서울시 상권분석서비스(점포-상권)_2019년.csv
 """
 
 import warnings
@@ -54,8 +53,8 @@ OUT_CSV    = ROOT / "data/processed/cross_sectional_data.csv"
 
 # ── 분석 연도 설정 ─────────────────────────────────────────────────────────────
 CROSS_YEAR   = 2019
-Q_START      = CROSS_YEAR * 10 + 1   # 20241
-Q_END        = CROSS_YEAR * 10 + 4   # 20244
+Q_START      = CROSS_YEAR * 10 + 1   # 20191
+Q_END        = CROSS_YEAR * 10 + 4   # 20194
 
 # 식음료 업종 키워드 (explore_features.py 와 동일)
 FOOD_KEYWORDS = ["음식점", "분식", "호프", "주점", "커피", "음료",
@@ -269,7 +268,7 @@ def main():
     OUT_CSV.parent.mkdir(parents=True, exist_ok=True)
     cs.to_csv(OUT_CSV, index=False, encoding="utf-8-sig")
     print(f"\n  저장 완료 → {OUT_CSV}")
-    print("\n  다음 단계: python scripts/09_multimodal_regression.py")
+    print("\n  다음 단계: python scripts/10_capability_map.py (구 09 계열은 폐기됨)")
 
 
 if __name__ == "__main__":

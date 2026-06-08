@@ -161,7 +161,7 @@ def main():
     print(f"\n저장 완료:")
     print(f"  Y 패널 데이터    → {OUT_PANEL}")
     print(f"  최종 상권 리스트 → {OUT_LIST}")
-    print(f"\n※ 다음 단계: scripts/03_collect_images.py 로 이미지 수집")
+    print(f"\n다음 단계: scripts/03_process_features.py (구조변수 처리)")
 
 
 if __name__ == "__main__":
