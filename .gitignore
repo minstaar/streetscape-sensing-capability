@@ -33,3 +33,12 @@ Thumbs.db
 *.pt
 *.pth
 *.ckpt
+
+# ── 대용량 원천 데이터·재생성 가능 산출물 (GitHub 100MB 초과 방지) ──
+data/raw/
+data/processed/*.csv
+data/images_test/
+data/images_test_new/
+data/images_test_poi/
+data/images_poi_test/
+_archive_unused/
