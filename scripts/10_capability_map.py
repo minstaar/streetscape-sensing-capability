@@ -184,6 +184,14 @@ def main():
             rq1.append({"level": typ, "target": name, "R2": round(r, 4)})
         log(f"   {typ}(n={len(s)}, {k}-fold): " + "  ".join(parts))
     log("   => 풀링 선택성 상당부분은 between-type. 발달 내에선 직장 선택성 유지.")
+
+    # RQ1c 경제 산출 예측(브리지: RQ3로 연결) ----------------------------------
+    log("\n[RQ1c] 매출 예측 (이미지 단독, 통제 없음 — RQ3 브리지)")
+    for name, col in [("log매출", "log_매출"), ("log매출per유동", "log_매출per유동")]:
+        sub = m.dropna(subset=[col]); r, s = cv_r2(sub[icols].values, sub[col].values)
+        log(f"   image -> {name:<13}  R2={r:.3f}")
+        rq1.append({"level": "bridge", "target": name, "R2": round(r, 4)})
+    log("   => 이미지는 매출도 예측. 이것이 '구조 대리'인지 '잔여 시각정보'인지는 RQ3에서 통제 후 확인.")
     pd.DataFrame(rq1).to_csv(REPORT_DIR / "capability_map_rq1.csv",
                              index=False, encoding="utf-8-sig")
 
@@ -260,14 +268,14 @@ def main():
                     "img": round(b, 4), "dR2": round(dr, 4), "p": round(p, 4)})
     log("   [유형 내(stratified)]")
     for typ, k in STRAT_FOLDS.items():
-        s = m[m["상권_구분_코드_명"] == typ].dropna(subset=ctrl).reset_index(drop=True)
-        gus = pd.get_dummies(s["자치구_코드_명"], prefix="gu", drop_first=True)
-        bs = np.hstack([s[ctrl].astype(float).values, gus.astype(float).values])
-        col = "log_매출per유동"
-        a, b, dr, p = cv_delta(bs, s[icols].values, s[col].values, folds=k)
-        log(f"     {typ} log매출per유동  base={a:.3f}  +img={b:.3f}  dR2={dr:+.3f}  p={p:.3f} {sig(p)}")
-        rq3.append({"level": typ, "Y": col, "base": round(a, 4),
-                    "img": round(b, 4), "dR2": round(dr, 4), "p": round(p, 4)})
+        for name, col in [("log매출", "log_매출"), ("log매출per유동", "log_매출per유동")]:
+            s = m[m["상권_구분_코드_명"] == typ].dropna(subset=ctrl + [col]).reset_index(drop=True)
+            gus = pd.get_dummies(s["자치구_코드_명"], prefix="gu", drop_first=True)
+            bs = np.hstack([s[ctrl].astype(float).values, gus.astype(float).values])
+            a, b, dr, p = cv_delta(bs, s[icols].values, s[col].values, folds=k)
+            log(f"     {typ} {name:<13}  base={a:.3f}  +img={b:.3f}  dR2={dr:+.3f}  p={p:.3f} {sig(p)}")
+            rq3.append({"level": typ, "Y": name, "base": round(a, 4),
+                        "img": round(b, 4), "dR2": round(dr, 4), "p": round(p, 4)})
     pd.DataFrame(rq3).to_csv(REPORT_DIR / "capability_map_rq3.csv",
                              index=False, encoding="utf-8-sig")
 
