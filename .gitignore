@@ -33,6 +33,7 @@ Thumbs.db
 *.pt
 *.pth
 *.ckpt
+*.pptx
 
 # ── 대용량 원천 데이터·재생성 가능 산출물 (GitHub 100MB 초과 방지) ──
 data/raw/
